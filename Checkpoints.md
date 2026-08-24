@@ -6,6 +6,30 @@
 
 ## 📌 Checkpoint 快照紀錄總覽
 
+### 🏆 [v2.00] 【穩定版 Stable】 - 安和國小 EQ 志工官方網站 全功能成熟穩定里程碑
+- **快照時間**：2026-08-24
+- **Git 標籤**：`v2.00`
+- **主要倉庫**：https://github.com/eqanhe/web.git
+- **線上網址**：https://eqanhe.github.io/web/
+- **核心功能成熟度與里程碑成果**：
+  1. **全站安和專屬在地化與暖白象牙風格 (Warm Cream & Ivory Theme)**：
+     - 採用溫潤護眼暖白色調（`#FAF8F5` / `#F3EFEA`）、暖金琥珀色（`#D97706`）與深焙暖炭棕黑（`#231F1D`），視覺高雅溫馨。
+     - 整合安和國小官方資訊與芯福里情緒教育協會雙機構連結。
+  2. **原生二選一動態報名表單與雙向保證金聯動**：
+     - 輕度學習（擔任志工）與認真學習（擔任志工+線上學習）單選互斥切換，動態展開詳細費用與退費機制說明。
+     - 極簡提交成功狀態切換，無任何冗餘外跳。
+  3. **正式整合 Google 雲端硬碟試算表與 0 廣告 Gmail 官方通知**：
+     - 直連正式 Google Apps Script Web App 端點（`https://script.google.com/macros/s/AKfycbzkVuWjDWV0m2FKI8kugiFTvTx0pAVisMv710IA_d90IQ-ipY22DzFayLMKtj4FIe1DlA/exec`）。
+     - 自動入庫 Google 試算表 `202609安和EQ芯志工報名表單`。
+     - 透過 Google 官方 Gmail 伺服器發送 480px 精緻繁體中文通知信件至 `eq.anhe@gmail.com`。
+  4. **LINE 諮詢全面直連群組與極速逃脫機制**：
+     - CTA 諮詢卡片與右下角懸浮按鈕直跳 `https://line.me/ti/g/CSZd4uc4K-`。
+     - 內建 `openExternalBrowser=1` LINE 內嵌瀏覽器極速外跳與導引彈窗。
+  5. **全站防快取標籤（`?v=2.00`）與 100% 雙目錄同步**：
+     - 專案根目錄與 `web/` 目錄已完成 100% 同步發布。
+
+---
+
 ### 🌟 [v1.04] - 正式整合上線 Google Apps Script Web App 網址，實現試算表自動寫入與 Email 直發
 - **快照時間**：2026-08-24
 - **Git 標籤**：`v1.04`
