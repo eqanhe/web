@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (registrationForm) {
         // 後端整合設定（試算表寫入與 Email 通知）
-        const GOOGLE_APPS_SCRIPT_WEBAPP_URL = ''; // 部署 Google Apps Script Web App 後可填入此處
+        const GOOGLE_APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzkVuWjDWV0m2FKI8kugiFTvTx0pAVisMv710IA_d90IQ-ipY22DzFayLMKtj4FIe1DlA/exec';
         const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSos9SzhP0PsOiHEQKmRzOjoO_N6sKKj7iIXrstmwETB-b7A/formResponse';
         const NOTIFY_TARGET = 'eq.anhe@gmail.com'; // 官方專屬 Email 通知信箱
 

@@ -6,6 +6,23 @@
 
 ## 📌 Checkpoint 快照紀錄總覽
 
+### 🌟 [v1.04] - 正式整合上線 Google Apps Script Web App 網址，實現試算表自動寫入與 Email 直發
+- **快照時間**：2026-08-24
+- **Git 標籤**：`v1.04`
+- **主要倉庫**：https://github.com/eqanhe/web.git
+- **線上網址**：https://eqanhe.github.io/web/
+- **核心更新內容**：
+  1. **正式綁定 Google Apps Script Web App Endpoint**：
+     - Web App URL: `https://script.google.com/macros/s/AKfycbzkVuWjDWV0m2FKI8kugiFTvTx0pAVisMv710IA_d90IQ-ipY22DzFayLMKtj4FIe1DlA/exec`
+     - 報名資料送出時直送該端點，自動入庫 `202609安和EQ芯志工報名表單` 試算表。
+     - Google 官方 Gmail 同步發送 0 廣告精緻通知信至 `eq.anhe@gmail.com`。
+  2. **靜態快取破除更新**：
+     - CSS 與 JS 靜態資源引用標籤版本升級為 `?v=1.04`。
+  3. **100% 雙目錄同步**：
+     - 根目錄與 `web/` 目錄已完成 100% 同步。
+
+---
+
 ### 🌟 [v1.03] - 升級 Google Apps Script 試算表自動入庫與 eq.anhe@gmail.com 官方直發系統
 - **快照時間**：2026-08-24
 - **Git 標籤**：`v1.03`
