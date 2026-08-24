@@ -411,19 +411,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.copyLineInvite = function() {
-        const lineId = 'dorischi0401';
-        navigator.clipboard.writeText(lineId).then(() => {
-            showToast(`✅ 已複製 LINE ID：${lineId}，請至 LINE 搜尋好友！`);
-        }).catch(() => {
-            showToast(`LINE ID：${lineId}`);
-        });
+        window.open('https://line.me/ti/g/CSZd4uc4K-', '_blank');
     };
 
-    window.copyLineId = function(id = 'dorischi0401') {
-        navigator.clipboard.writeText(id).then(() => {
-            showToast(`✅ 已複製 LINE ID：${id}，請至 LINE 搜尋好友！`);
-        }).catch(() => {
-            showToast(`LINE ID：${id}`);
-        });
+    window.copyLineId = function(url = 'https://line.me/ti/g/CSZd4uc4K-') {
+        window.open(url, '_blank');
     };
 });
+
