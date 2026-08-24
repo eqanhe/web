@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="warm-light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="375">
+    <!-- HTTP Anti-Cache Headers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+        // 1. 確保從短網址跳轉或各類 In-App 瀏覽器載入時強制套用手機最佳 Viewport
+        (function() {
+            var vp = document.querySelector('meta[name="viewport"]');
+            if (vp) {
+                vp.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, viewport-fit=cover');
+            }
+        })();
+
+        // 2. LINE 內嵌瀏覽器極速逃脫機制 (自動附加 openExternalBrowser=1 跳轉系統預設瀏覽器)
+        (function() {
+            try {
+                var ua = (navigator.userAgent || '').toLowerCase();
+                if (ua.indexOf('line') > -1 && window.location.search.indexOf('openExternalBrowser=1') === -1) {
+                    var sep = window.location.href.indexOf('?') > -1 ? '&' : '?';
+                    window.location.href = window.location.href + sep + 'openExternalBrowser=1';
+                }
+            } catch(e) {}
+        })();
+    </script>
+    <title>安和 EQ 志工官方網站｜懂孩子，是我們給孩子最好的禮物</title>
+    <meta name="description" content="安和 EQ 志工招募中：各位家長並不缺少愛，而是缺少一個「懂孩子」的方法。攜手芯福里情緒教育協會深耕 12 年，每學期僅需 8 小時，邀您為孩子走進一次校園！">
+    <meta name="keywords" content="安和EQ志工, 安和國小EQ志工, 安和國小, 芯福里, 芯福里情緒教育協會, 小一新生, 開學適應, EQ教育, 親子共學, 反霸凌, 懂孩子">
+
+    <!-- Open Graph / LINE / Facebook Sharing Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://eqanhe.github.io/web/">
+    <meta property="og:title" content="安和 EQ 志工官方網站｜懂孩子，是我們給孩子最好的禮物">
+    <meta property="og:description" content="各位家長並不缺少愛，而是缺少一個「懂孩子」的方法。安和 12 年 EQ 教育傳承，每學期僅需 8 小時，邀您走進校園與孩子一同成長！">
+    <meta property="og:image" content="images/hero_eq_parent_child.jpg">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="安和 EQ 志工官方網站｜懂孩子，是我們給孩子最好的禮物">
+    <meta name="twitter:description" content="各位家長並不缺少愛，而是缺少一個「懂孩子」的方法。安和 12 年 EQ 教育傳承，每學期僅需 8 小時，邀您走進校園與孩子一同成長！">
+    <meta name="twitter:image" content="images/hero_eq_parent_child.jpg">
+
+    <!-- Google Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "安和 EQ 志工",
+      "parentOrganization": {
+        "@type": "ElementarySchool",
+        "name": "新北市土城區安和國民小學"
+      },
+      "description": "安和 EQ 志工致力於推廣情緒教育與親子共學，透過專業培訓與班級輔導，協助孩子建立健全心理素質與人際互動技巧。",
+      "url": "https://eqanhe.github.io/web/"
+    }
+    </script>
+
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FAF8F5">
+    <link rel="stylesheet" href="css/style.css?v=1.00">
+</head>
+<body>
+
+    <!-- LINE 內嵌瀏覽器跳出導引彈窗 (防呆圖文教學) -->
+    <div id="lineGuideModal" class="line-guide-modal hidden">
+        <div class="line-guide-card">
+            <div class="line-guide-icon">🌐</div>
+            <div class="line-guide-title">建議在瀏覽器中開啟</div>
+            <div class="line-guide-steps">
+                為了提供最完整流暢的視覺體驗與表單送出：<br><br>
+                <div class="step-item"><strong>1. 點擊右上角或右下角的</strong> <span class="highlight-badge">[ ⋮ ]</span> 或 <span class="highlight-badge">[ ⋯ ]</span></div>
+                <div class="step-item"><strong>2. 點選</strong> <span class="highlight-text">「在預設瀏覽器中開啟」</span> 或 <span class="highlight-text">「以 Safari 開啟」</span></div>
+            </div>
+            <button id="btn-close-line-guide" class="btn-guide-close" onclick="document.getElementById('lineGuideModal').classList.add('hidden')">我知道了，繼續瀏覽</button>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="安和 EQ 志工 首頁">
+                    <div class="logo-badge">安和 EQ 志工</div>
+                </div>
+
+                <div class="nav-actions">
+                    <a href="#signup" class="btn-primary">
+                        <span>立即報名</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-glow-bg"></div>
+        <div class="container hero-container">
+            <div class="hero-content reveal">
+                <h1 class="hero-title">
+                    <span class="gradient-text">懂孩子</span><br>
+                    是我們給孩子<br>
+                    最好的禮物
+                </h1>
+                <p class="hero-desc">
+                    邀請您走進校園裡<br>
+                    與孩子們一起學EQ<br>
+                    每學期僅需 8 小時<br>
+                    喚醒孩子的情緒力
+                </p>
+            </div>
+
+            <div class="hero-image-wrapper reveal">
+                <div class="hero-image-card">
+                    <img src="images/hero_eq_parent_child.jpg?v=1.00" alt="安和家長與小一新生漫步進入溫暖校園" loading="eager">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Pillars Section: 點選標題展開顯示內文 -->
+    <section id="why-eq" class="section section-alt">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>新生家長最想知道的三件事</h2>
+            </div>
+
+            <div class="pillars-grid">
+                <!-- Pillar 1 -->
+                <div class="pillar-card glass collapsible reveal">
+                    <div class="pillar-header">
+                        <div class="pillar-header-left">
+                            <div class="pillar-icon-box">🌟</div>
+                            <div>
+                                <h3>1. EQ 能帶給小孩哪些好處？</h3>
+                            </div>
+                        </div>
+                        <div class="pillar-toggle-btn">+</div>
+                    </div>
+                    <div class="pillar-body">
+                        <p>
+                            很多人以為 EQ 是教孩子「不要生氣」，其實 EQ 是教孩子「看懂自己的情緒，並找到正確的表達方式」。
+                        </p>
+                        <p style="margin-top: 0.6rem;">
+                            當孩子被誤解時，表面是「生氣甩門」，底層其實是「委屈」。透過覺察，孩子能學會「理性的說明」取代洩恨，這一個小小的覺察將改變孩子一生！
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="pillar-card glass collapsible reveal">
+                    <div class="pillar-header">
+                        <div class="pillar-header-left">
+                            <div class="pillar-icon-box">🛡️</div>
+                            <div>
+                                <h3>2. EQ 能解決小孩哪些困擾？</h3>
+                            </div>
+                        </div>
+                        <div class="pillar-toggle-btn">+</div>
+                    </div>
+                    <div class="pillar-body">
+                        <p>
+                            面對日常溝通斷點、手機 3C 依賴、拖拖拉拉、專注力不足，以及校園中「開玩笑、惡作劇與霸凌」的界線混淆。
+                        </p>
+                        <p style="margin-top: 0.6rem;">
+                            EQ 課程運用孩子聽得懂的語言與戲劇活動，教孩子學會精準分辨人際分際，避免過度防衛或盲目隱忍，打造安全防護網！
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="pillar-card glass collapsible reveal">
+                    <div class="pillar-header">
+                        <div class="pillar-header-left">
+                            <div class="pillar-icon-box">⏰</div>
+                            <div>
+                                <h3>3. 我需要花很多時間投入嗎？</h3>
+                            </div>
+                        </div>
+                        <div class="pillar-toggle-btn">+</div>
+                    </div>
+                    <div class="pillar-body">
+                        <p>
+                            完全不用擔心負擔過重！線上影音課程 24 小時隨點隨看（開放長達 2 個月，在家就能學）。
+                        </p>
+                        <p style="margin-top: 0.6rem;">
+                            實體入班每學期僅需 4 次（每次約 2 小時，共計約 8 小時），就能輕鬆完成輔班任務，陪伴孩子在校園成長！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-Life Scenarios: 點選卡片展開呈現方式 -->
+    <section id="scenarios" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>EQ 教學現場：真實教養難題破解術</h2>
+            </div>
+
+            <div class="scenarios-grid reveal">
+                <!-- Scenario Card 1 -->
+                <div class="scenario-card glass collapsible reveal">
+                    <div class="scenario-header">
+                        <div class="scenario-header-left">
+                            <div class="scenario-icon-box">😤</div>
+                            <div>
+                                <h3>1. 溝通斷點：講沒兩句就各回房間？</h3>
+                                <div class="scenario-teaser">叫他往東偏往西？看懂生氣背後的「委屈」</div>
+                            </div>
+                        </div>
+                        <div class="scenario-toggle-btn">+</div>
+                    </div>
+                    <div class="scenario-body">
+                        <p>當孩子因為誤解而被責備時，第一反應常是頂嘴、甩門或怒罵。很多家長會誤以為孩子在挑釁，其實背後是委屈與無助。</p>
+                        <h4 style="color: var(--accent-secondary); font-size: 1rem; margin-top: 0.8rem;">💡 EQ 實戰引導心法：</h4>
+                        <ul class="scenario-solution-list">
+                            <li>不站在孩子對立面：先放下指責，給予彼此冷靜空間</li>
+                            <li>幽默點出答案：「我看你其實知道標準答案喔～」</li>
+                            <li>認同思考難度：「能講出反向答案代表你腦筋動得很快」</li>
+                            <li>看懂底層情緒：表面是生氣，底層其實是「委屈」，引導孩子把委屈說出口</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Scenario Card 2 -->
+                <div class="scenario-card glass collapsible reveal">
+                    <div class="scenario-header">
+                        <div class="scenario-header-left">
+                            <div class="scenario-icon-box">📱</div>
+                            <div>
+                                <h3>2. 3C 成癮：螢幕隔開了我們的心？</h3>
+                                <div class="scenario-teaser">手機失控、作業拖拉令人心力交瘁？</div>
+                            </div>
+                        </div>
+                        <div class="scenario-toggle-btn">+</div>
+                    </div>
+                    <div class="scenario-body">
+                        <p>數位時代孩子面對高刺激螢幕，常因時間感模糊與自制力未成熟而引發家庭風暴。</p>
+                        <h4 style="color: var(--accent-secondary); font-size: 1rem; margin-top: 0.8rem;">💡 EQ 實戰引導心法：</h4>
+                        <ul class="scenario-solution-list">
+                            <li>無痛倒數約定法：不突襲沒收，提前 5 分鐘、1 分鐘給予緩衝倒數</li>
+                            <li>同理共感取代怒吼：「我知道遊戲很好玩，結束時會很不捨」</li>
+                            <li>實體替代方案：用桌遊、戶外運動、親子共讀轉移注意力</li>
+                            <li>全家共同約定：設立「無 3C 親子時光」，營造溫馨家庭氛圍</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Scenario Card 3 -->
+                <div class="scenario-card glass collapsible reveal">
+                    <div class="scenario-header">
+                        <div class="scenario-header-left">
+                            <div class="scenario-icon-box">🎒</div>
+                            <div>
+                                <h3>3. 入學適應：面對挫折哭鬧或分心？</h3>
+                                <div class="scenario-teaser">上課容易分心、坐不住、動來動去？</div>
+                            </div>
+                        </div>
+                        <div class="scenario-toggle-btn">+</div>
+                    </div>
+                    <div class="scenario-body">
+                        <p>低年級孩子大腦發育仍在進行中，傳統單向說教容易讓孩子失去耐心與專注力。</p>
+                        <h4 style="color: var(--accent-secondary); font-size: 1rem; margin-top: 0.8rem;">💡 EQ 實戰引導心法：</h4>
+                        <ul class="scenario-solution-list">
+                            <li>調整心態：不是不認真，而是「需要更有趣的互動刺激」</li>
+                            <li>動態互動教學：改為快問快答、角色扮演與趣味闖關挑戰</li>
+                            <li>微小成就激勵：設立「看誰能撐到最後」，參與感瞬間提升</li>
+                            <li>分段專注練習：從 10 分鐘小目標開始，逐步建立學習耐力</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Scenario Card 4 -->
+                <div class="scenario-card glass collapsible reveal">
+                    <div class="scenario-header">
+                        <div class="scenario-header-left">
+                            <div class="scenario-icon-box">🤝</div>
+                            <div>
+                                <h3>4. 社交衝突：如何學會保護自己與他人？</h3>
+                                <div class="scenario-teaser">精準分辨「開玩笑、惡作劇與霸凌」</div>
+                            </div>
+                        </div>
+                        <div class="scenario-toggle-btn">+</div>
+                    </div>
+                    <div class="scenario-body">
+                        <p>過度防衛會失去朋友，一味隱忍又容易陷入危險。唯有掌握清晰界線，孩子才能真正保護自己並尊重他人。</p>
+                        <h4 style="color: var(--accent-secondary); font-size: 1rem; margin-top: 0.8rem;">💡 EQ 實戰引導心法：</h4>
+                        <ul class="scenario-solution-list">
+                            <li>掌握霸凌 3 大要件：1. 長期且持續 2. 故意且惡意 3. 造成身心傷害</li>
+                            <li>透析 5 大校園角色：加害者、受害者、起鬨者、旁觀者、逃避者</li>
+                            <li>情境演練學會說「不」：透過戲劇活動練習堅定表達人際界線</li>
+                            <li>親師生共同掌握常識：擁有共同的情緒語言，杜絕校園霸凌</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bullying 3 Keys Banner -->
+            <div class="bullying-box glass reveal">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.4rem;">
+                    <span style="font-size: 1.5rem;">🛡️</span>
+                    <h3 style="font-size: 1.3rem;">校園反霸凌常識：親師生掌握「3 大要件」</h3>
+                </div>
+
+                <div class="bullying-grid">
+                    <div class="bullying-item">
+                        <h4>1. 長期且持續</h4>
+                    </div>
+                    <div class="bullying-item">
+                        <h4>2. 故意且惡意</h4>
+                    </div>
+                    <div class="bullying-item">
+                        <h4>3. 造成身心傷害</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Anxiety Quick Diagnostic -->
+            <div class="quiz-box glass reveal">
+                <div class="badge badge-green">小一新生家長自測</div>
+                <h3 style="font-size: 1.35rem; margin: 0.6rem 0;">💬 測測您目前最在意的開學焦慮：</h3>
+
+                <div class="quiz-options">
+                    <button class="quiz-option-btn" data-advice="<strong>💌 給擔心新朋友的家長：</strong><br>低年級孩子通常在 2~3 週內會建立社交圈。EQ 課程會教孩子主動打招呼與分享小技巧，睡前不妨問孩子「今天有跟誰笑一個嗎」，以讚美代替焦慮。">
+                        👭 擔心孩子在班上交不到朋友或被排擠
+                    </button>
+                    <button class="quiz-option-btn" data-advice="<strong>💌 給擔心常規適應的家長：</strong><br>剛從小學過渡，專注力 15 分鐘是正常的。EQ 志工在班上會帶動互動遊戲，把守規矩變成闖關任務，回家也能用遊戲化方式完成作業。">
+                        ⏰ 擔心孩子上課坐不住、常規跟不上
+                    </button>
+                    <button class="quiz-option-btn" data-advice="<strong>💌 給擔心受委屈不敢說的家長：</strong><br>孩子被欺負不敢說，常因害怕被責備軟弱。EQ 教學讓孩子認識「委屈不是錯」，同時教導父母成為不批判的傾聽樹洞。">
+                        🥺 擔心孩子受委屈或被欺負不敢回家講
+                    </button>
+                    <button class="quiz-option-btn" data-advice="<strong>💌 給心力交瘁的家長：</strong><br>您辛苦了！不是您教不好，而是大腦情緒開關被觸發。加入 EQ 志工組能學到「暫停 6 秒鐘」與「我訊息溝通法」，找回溫柔堅定的自己。">
+                        😡 為什麼我總是一下子脫口而出責怪孩子
+                    </button>
+                </div>
+
+                <div id="quiz-result" class="quiz-result">
+                    <div id="quiz-result-text"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Roadmap Section (參與方式二選一) -->
+    <section id="roadmap" class="section section-alt">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="roadmap-main-title">參與方式二選一</h2>
+            </div>
+
+            <div class="dual-path-grid reveal">
+                <!-- Path 1 -->
+                <div class="path-card glass">
+                    <div class="path-badge">方法一 (輕度學習)</div>
+                    <div class="path-body sub-path-wrapper">
+                        <div class="sub-path-block">
+                            <div class="sub-path-title">🌱 擔任志工</div>
+                            <ul class="sub-path-list">
+                                <li>
+                                    需擔任 EQ 講師的助手 8 小時<br>
+                                    <span class="sub-line">（每學期僅 4 次，下午 13:00~15:00）</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Path 2 -->
+                <div class="path-card glass path-card-highlight">
+                    <div class="path-badge">方法二 (認真學習)</div>
+                    <div class="path-body sub-path-wrapper">
+                        <!-- Sub Path 1 -->
+                        <div class="sub-path-block">
+                            <div class="sub-path-title">💻 線上課程</div>
+                            <ul class="sub-path-list">
+                                <li>
+                                    約 2 個月內自主看完<br>
+                                    <span class="sub-line">（24 小時隨選隨看）</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Sub Path 2 -->
+                        <div class="sub-path-block">
+                            <div class="sub-path-title">👥 線上共學</div>
+                            <ul class="sub-path-list">
+                                <li>
+                                    4 次線上都需上線<br>
+                                    <span class="sub-line">（線上會議 9:00~12:00，督導親自解惑）</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Sub Path 3 -->
+                        <div class="sub-path-block">
+                            <div class="sub-path-title">🌱 擔任志工</div>
+                            <ul class="sub-path-list">
+                                <li>
+                                    需擔任 EQ 講師的助手 8 小時<br>
+                                    <span class="sub-line">（每學期僅 4 次，下午 13:00~15:00）</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Native Registration Form Section -->
+    <section class="signup-section" id="signup">
+        <div class="container">
+            <div class="signup-card glass reveal">
+                <div class="signup-header" id="signup-header">
+                    <h2 class="signup-badge-title">線上立即報名</h2>
+                </div>
+
+                <!-- Registration Form -->
+                <form id="eq-registration-form" class="signup-form" novalidate>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="form-name" class="form-label">
+                                姓名 <span class="required-star">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <input type="text" id="form-name" name="entry.602205738" class="form-input" required autocomplete="name">
+                            </div>
+                            <span class="field-error" id="error-name">請填寫您的姓名</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-phone" class="form-label">
+                                手機 <span class="required-star">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                <input type="tel" id="form-phone" name="entry.1903577013" class="form-input" required autocomplete="tel">
+                            </div>
+                            <span class="field-error" id="error-phone">請填寫有效的手機號碼</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="form-line" class="form-label">
+                            LINE ID
+                        </label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <input type="text" id="form-line" name="entry.1179144741" class="form-input" placeholder="（選填）（方便加群討論）">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            參與項目 <span class="required-star">*（二選一）</span>
+                        </label>
+                        <div class="checkbox-group radio-group">
+                            <label class="checkbox-item radio-item" for="plan-volunteer-only">
+                                <input type="radio" name="participation_plan" id="plan-volunteer-only" value="volunteer_only" checked>
+                                <span class="radio-custom"></span>
+                                <span class="checkbox-label">
+                                    <strong>方法一:輕度學習(擔任志工)</strong>
+                                </span>
+                            </label>
+
+                            <label class="checkbox-item radio-item checkbox-item-course" for="plan-course-volunteer">
+                                <input type="radio" name="participation_plan" id="plan-course-volunteer" value="course_and_volunteer">
+                                <span class="radio-custom"></span>
+                                <span class="checkbox-label">
+                                    <strong>方法二:認真學習(擔任志工+線上學習)</strong>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Volunteer Info Card (Shown when "方法一" is checked) -->
+                    <div id="volunteer-only-info" class="compact-guarantee-box glass">
+                        <div class="compact-g-header">
+                            <div class="compact-fee-highlight">
+                                <div class="fee-row-item">🌱 <strong>擔任志工：</strong><span class="free-badge">免費</span></div>
+                            </div>
+                        </div>
+                        <div class="compact-req-wrapper">
+                            <div class="compact-req-title">任務:</div>
+                            <div class="compact-req-badges">
+                                <span class="req-badge">✔ 擔任志工:需擔任EQ講師的助手 8 小時</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compact Guarantee Card (Only shown when "方法二" is checked) -->
+                    <div id="online-course-guarantee-info" class="compact-guarantee-box glass" style="display: none;">
+                        <div class="compact-g-header">
+                            <div class="compact-fee-highlight">
+                                <div class="fee-row-item">🌱 <strong>擔任志工：</strong><span class="free-badge">免費</span></div>
+                                <div class="fee-row-item">💻 <strong>線上學習：</strong><span class="cost-badge">需支付 500 元工本費</span></div>
+                            </div>
+                            <p class="compact-fee-subnote">線上課程與費用，皆由芯福里情緒教育協會提供與收取</p>
+                        </div>
+                        <div class="compact-price-flow">
+                            <div class="c-flow-item">
+                                <span class="c-flow-title">報名費用</span>
+                                <span class="c-flow-val">2,000<small>元</small></span>
+                            </div>
+                            <div class="c-flow-arrow">➔</div>
+                            <div class="c-flow-item highlight">
+                                <span class="c-flow-title">完成任務退還</span>
+                                <span class="c-flow-val refund">1,500<small>元</small></span>
+                            </div>
+                            <div class="c-flow-arrow">=</div>
+                            <div class="c-flow-item net">
+                                <span class="c-flow-title">實質僅支出工本費</span>
+                                <span class="c-flow-val net-val">500<small>元</small></span>
+                            </div>
+                        </div>
+                        <div class="compact-req-wrapper">
+                            <div class="compact-req-title">任務:</div>
+                            <div class="compact-req-badges">
+                                <span class="req-badge">✔ 線上課程:約2 個月內自主看完</span>
+                                <span class="req-badge">✔ 線上共學: 4 次線上都需上線</span>
+                                <span class="req-badge">✔ 擔任志工:需擔任EQ講師的助手 8 小時</span>
+                            </div>
+                            <div class="compact-req-note">(以上三任務皆需完成，才達退費標準)</div>
+                        </div>
+                    </div>
+
+                    <div class="form-action">
+                        <button type="submit" id="submit-btn" class="btn-submit">
+                            <span class="btn-text">🚀 立即送出報名資料</span>
+                            <span class="btn-loading" style="display: none;">
+                                <span class="spinner-ring"></span>
+                                正在傳送報名資料...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Submission Success State (Hidden by default) -->
+                <div id="form-success" class="form-success-card" style="display: none;">
+                    <div class="success-icon-wrap">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h3 class="success-title">🎉 報名登記已成功送出！</h3>
+                    <p class="success-desc">
+                        感謝您為孩子邁出關鍵的一步！<br>
+                        我們會盡快跟您聯繫。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Call to Action (CTA) Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box glass reveal">
+                <h2>懂孩子，是我們給孩子最好的禮物</h2>
+                <p>
+                    各位家長並不缺少愛，而是缺少一個「懂孩子」的方法。<br class="desktop-br">
+                    加入安和 EQ 志工團隊，讓我們成為孩子最有力的靠山！
+                </p>
+                <div>
+                    <div class="line-contact-card" onclick="copyLineInvite()">
+                        <span>💬 招募諮詢 LINE ID：<strong id="line-id-text">dorischi0401</strong>（點擊複製）</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating LINE Button -->
+    <a href="javascript:void(0)" onclick="copyLineInvite()" class="floating-line-btn" aria-label="加 Line 私訊諮詢">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.084.495.238l2.476 3.355V8.108c0-.345.282-.63.63-.63.345 0 .626.285.626.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        <span>加 Line 私訊諮詢</span>
+    </a>
+
+    <!-- Copy Toast Notification -->
+    <div id="toast" class="toast">✅ 已複製 LINE 諮詢 ID，請至 LINE 搜尋好友！</div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-orgs-grid">
+                <a href="https://www.anhoes.ntpc.edu.tw/" target="_blank" rel="noopener" class="footer-org-card glass">
+                    <span class="footer-org-icon">🏫</span>
+                    <span class="footer-org-name">新北市安和國小官網</span>
+                </a>
+                <a href="https://www.happinessvillage.org/" target="_blank" rel="noopener" class="footer-org-card glass">
+                    <span class="footer-org-icon">💖</span>
+                    <span class="footer-org-name">芯福里情緒教育推廣協會</span>
+                </a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 安和 EQ 志工. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js?v=1.00"></script>
+</body>
+</html>

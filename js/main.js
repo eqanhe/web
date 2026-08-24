@@ -1,0 +1,429 @@
+/**
+ * 安和國小 EQ 志工組官方網站 - 核心互動邏輯
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. 全域暖白主題設定 (Warm Cream & Ivory Theme)
+    document.documentElement.setAttribute('data-theme', 'warm-light');
+    try {
+        localStorage.removeItem('anhe-eq-theme');
+        localStorage.removeItem('leli-eq-theme');
+    } catch (e) {
+        // 忽略可能存在的儲存限制
+    }
+
+    // 2. LINE 內嵌瀏覽器導引彈窗展示 (若仍在 iOS LINE 內部)
+    const ua = (navigator.userAgent || '').toLowerCase();
+    if (ua.indexOf('line') > -1) {
+        const lineModal = document.getElementById('lineGuideModal');
+        if (lineModal) {
+            lineModal.classList.remove('hidden');
+        }
+    }
+
+    // 3. 導覽列滾動陰影與毛玻璃效果
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 30) {
+            header?.classList.add('scrolled');
+        } else {
+            header?.classList.remove('scrolled');
+        }
+    });
+
+    // 4. 滾動進場顯現動畫 (Scroll Reveal)
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // 5. 行動版選單切換 (Mobile Drawer)
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    
+    if (mobileMenuBtn && mobileDrawer) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileDrawer.classList.toggle('open');
+        });
+
+        // 點擊選單項目自動關閉
+        mobileDrawer.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileDrawer.classList.remove('open');
+            });
+        });
+    }
+
+    // 6. 三大核心與四大教養情境卡片點擊展開/收合 (Collapsible Cards)
+    const collapsibleCards = document.querySelectorAll('.pillar-card.collapsible, .scenario-card.collapsible');
+    collapsibleCards.forEach(card => {
+        card.addEventListener('click', () => {
+            card.classList.toggle('open');
+        });
+    });
+
+    // 7. 新生家長入學焦慮小測驗 (Interactive Anxiety & EQ Quiz)
+    const quizOptions = document.querySelectorAll('.quiz-option-btn');
+    const quizResult = document.getElementById('quiz-result');
+    const quizResultText = document.getElementById('quiz-result-text');
+
+    quizOptions.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const advice = btn.getAttribute('data-advice');
+            if (quizResult && quizResultText && advice) {
+                quizResultText.innerHTML = advice;
+                quizResult.style.display = 'block';
+                quizResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    });
+
+    // 8. 原生報名表單非同步提交 (Google Form Seamless Submit + Email 通知)
+    const registrationForm = document.getElementById('eq-registration-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const formSuccess = document.getElementById('form-success');
+    const btnResetForm = document.getElementById('btn-reset-form');
+
+    if (registrationForm) {
+        const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSos9SzhP0PsOiHEQKmRzOjoO_N6sKKj7iIXrstmwETB-b7A/formResponse';
+        const NOTIFY_TARGET = 'eq.anhe@gmail.com'; // 綁定 eq.anhe@gmail.com
+
+        // 非同步寄送通知 Email 至指定信箱
+        async function sendEmailNotification(data) {
+            try {
+                const now = new Date();
+                const timeString = now.toLocaleString('zh-TW', { 
+                    timeZone: 'Asia/Taipei',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false 
+                });
+
+                const emailPayload = {
+                    _subject: `【安和 EQ 志工官網】新報名通知：${data.name}（${data.phone}）`,
+                    '新夥伴姓名': data.name,
+                    '新夥伴手機': data.phone,
+                    '新夥伴Line ID': data.line || '（未提供）',
+                    '新夥伴參與項目': data.options.join('、'),
+                    '新夥伴報名時間': timeString,
+                    _template: 'box',
+                    _captcha: 'false'
+                };
+
+                await fetch(`https://formsubmit.co/ajax/${NOTIFY_TARGET}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(emailPayload)
+                });
+            } catch (err) {
+                console.warn('Email notification fetch warning (silent):', err);
+            }
+        }
+        
+        const nameInput = document.getElementById('form-name');
+        const phoneInput = document.getElementById('form-phone');
+        const lineInput = document.getElementById('form-line');
+        const errorName = document.getElementById('error-name');
+        const errorPhone = document.getElementById('error-phone');
+
+        // 即時移除錯誤提示
+        nameInput?.addEventListener('input', () => {
+            nameInput.classList.remove('is-invalid');
+            errorName?.classList.remove('show');
+        });
+
+        phoneInput?.addEventListener('input', () => {
+            phoneInput.classList.remove('is-invalid');
+            errorPhone?.classList.remove('show');
+        });
+
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            let isValid = true;
+            const nameVal = nameInput?.value.trim();
+            const phoneVal = phoneInput?.value.trim();
+            const lineVal = lineInput?.value.trim() || '';
+
+            if (!nameVal) {
+                nameInput?.classList.add('is-invalid');
+                errorName?.classList.add('show');
+                isValid = false;
+            }
+
+            // 簡易台灣電話/手機驗證（至少 8 碼數字）
+            const cleanPhone = phoneVal.replace(/[^0-9]/g, '');
+            if (!phoneVal || cleanPhone.length < 8) {
+                phoneInput?.classList.add('is-invalid');
+                errorPhone?.classList.add('show');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                const firstInvalid = registrationForm.querySelector('.is-invalid');
+                firstInvalid?.focus();
+                return;
+            }
+
+            // 收集選取的二選一方案
+            const selectedPlan = registrationForm.querySelector('input[name="participation_plan"]:checked')?.value || 'volunteer_only';
+            const formOptionsToSubmit = [];
+
+            if (selectedPlan === 'course_and_volunteer') {
+                // 方法二：包含擔任志工與EQ線上課程
+                formOptionsToSubmit.push('擔任志工', 'EQ線上課程');
+            } else {
+                // 方法一：單純擔任志工
+                formOptionsToSubmit.push('擔任志工');
+            }
+
+            // 建立要送往 Google 表單的 FormData / URLSearchParams
+            const formData = new URLSearchParams();
+            formData.append('entry.602205738', nameVal);     // 姓名
+            formData.append('entry.1903577013', phoneVal);   // 手機號碼
+            if (lineVal) {
+                formData.append('entry.1179144741', lineVal); // LINE ID
+            }
+            
+            // 勾選項目依序傳送
+            formOptionsToSubmit.forEach(opt => {
+                formData.append('entry.1902119823', opt);
+            });
+
+            // 切換按鈕為載入狀態
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                const btnText = submitBtn.querySelector('.btn-text');
+                const btnLoading = submitBtn.querySelector('.btn-loading');
+                if (btnText && btnLoading) {
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'inline-flex';
+                }
+            }
+
+            // 非同步寄送 Email 通知至 eq.anhe@gmail.com (背景執行不阻礙流程)
+            sendEmailNotification({
+                name: nameVal,
+                phone: phoneVal,
+                line: lineVal,
+                options: formOptionsToSubmit
+            });
+
+            try {
+                // 使用 fetch no-cors 模式直接背景寫入 Google Form
+                await fetch(GOOGLE_FORM_ACTION_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData.toString()
+                });
+
+                // 稍微延遲 500ms 營造舒適流暢感
+                await new Promise(r => setTimeout(r, 500));
+
+                // 隱藏報名大標題與表單，顯示極簡成功畫面
+                const signupHeader = document.getElementById('signup-header');
+                if (signupHeader) {
+                    signupHeader.style.display = 'none';
+                }
+                registrationForm.style.display = 'none';
+                if (formSuccess) {
+                    formSuccess.style.display = 'block';
+                    formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                showToast('🎉 報名資料已成功送出！');
+            } catch (err) {
+                console.error('表單發送時發生異常:', err);
+                
+                // Fallback: 建立隱藏 iframe 送出以確保入庫
+                submitViaHiddenIframe(GOOGLE_FORM_ACTION_URL, {
+                    'entry.602205738': nameVal,
+                    'entry.1903577013': phoneVal,
+                    'entry.1179144741': lineVal,
+                    'entry.1902119823': formOptionsToSubmit
+                });
+
+                const signupHeader = document.getElementById('signup-header');
+                if (signupHeader) {
+                    signupHeader.style.display = 'none';
+                }
+                registrationForm.style.display = 'none';
+                if (formSuccess) {
+                    formSuccess.style.display = 'block';
+                }
+                showToast('🎉 報名登記已完成！');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    const btnText = submitBtn.querySelector('.btn-text');
+                    const btnLoading = submitBtn.querySelector('.btn-loading');
+                    if (btnText && btnLoading) {
+                        btnText.style.display = 'inline-flex';
+                        btnLoading.style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        const planRadios = registrationForm.querySelectorAll('input[name="participation_plan"]');
+        const guaranteeInfo = document.getElementById('online-course-guarantee-info');
+        const volunteerInfo = document.getElementById('volunteer-only-info');
+        const courseRadio = document.getElementById('plan-course-volunteer');
+        const volunteerRadio = document.getElementById('plan-volunteer-only');
+
+        function updatePlanDetails(shouldScroll = false) {
+            if (courseRadio && courseRadio.checked) {
+                if (volunteerInfo) volunteerInfo.style.display = 'none';
+                if (guaranteeInfo) {
+                    guaranteeInfo.style.display = 'block';
+                    if (shouldScroll) {
+                        guaranteeInfo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+            } else {
+                if (guaranteeInfo) guaranteeInfo.style.display = 'none';
+                if (volunteerInfo) {
+                    volunteerInfo.style.display = 'block';
+                    if (shouldScroll) {
+                        volunteerInfo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+            }
+        }
+
+        // 監聽參與方案二選一 Radio 切換狀態，動態展示/隱藏說明
+        planRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                updatePlanDetails(true);
+            });
+        });
+
+        // 初始化方案說明顯示狀態
+        updatePlanDetails(false);
+
+        // 全局函式：外部點擊「保證金退還機制」時自動定位並展開
+        window.showGuaranteeInfo = function() {
+            const signupSection = document.getElementById('signup');
+            if (signupSection) {
+                signupSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            if (courseRadio) {
+                courseRadio.checked = true;
+                updatePlanDetails(false);
+                if (guaranteeInfo) {
+                    guaranteeInfo.style.boxShadow = '0 0 30px rgba(217, 119, 6, 0.4)';
+                    setTimeout(() => {
+                        guaranteeInfo.style.boxShadow = '0 10px 25px rgba(120, 95, 65, 0.08)';
+                    }, 2000);
+                }
+            }
+        };
+
+        // 重新填寫按鈕
+        btnResetForm?.addEventListener('click', () => {
+            registrationForm.reset();
+            registrationForm.style.display = 'flex';
+            if (volunteerRadio) {
+                volunteerRadio.checked = true;
+            }
+            if (formSuccess) {
+                formSuccess.style.display = 'none';
+            }
+            updatePlanDetails(false);
+            registrationForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    // 輔助函式：透過 Hidden iframe 備援送出
+    function submitViaHiddenIframe(actionUrl, data) {
+        let iframe = document.getElementById('hidden_iframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'hidden_iframe';
+            iframe.name = 'hidden_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+
+        const hiddenForm = document.createElement('form');
+        hiddenForm.action = actionUrl;
+        hiddenForm.method = 'POST';
+        hiddenForm.target = 'hidden_iframe';
+        hiddenForm.style.display = 'none';
+
+        for (const [key, val] of Object.entries(data)) {
+            if (Array.isArray(val)) {
+                val.forEach(v => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = v;
+                    hiddenForm.appendChild(input);
+                });
+            } else if (val) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = val;
+                hiddenForm.appendChild(input);
+            }
+        }
+
+        document.body.appendChild(hiddenForm);
+        hiddenForm.submit();
+        setTimeout(() => hiddenForm.remove(), 2000);
+    }
+
+    // 9. 複製與互動 Toast 通知
+    window.showToast = function(msg) {
+        let toast = document.getElementById('global-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'global-toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3500);
+    };
+
+    window.copyLineInvite = function() {
+        const lineId = 'dorischi0401';
+        navigator.clipboard.writeText(lineId).then(() => {
+            showToast(`✅ 已複製 LINE ID：${lineId}，請至 LINE 搜尋好友！`);
+        }).catch(() => {
+            showToast(`LINE ID：${lineId}`);
+        });
+    };
+
+    window.copyLineId = function(id = 'dorischi0401') {
+        navigator.clipboard.writeText(id).then(() => {
+            showToast(`✅ 已複製 LINE ID：${id}，請至 LINE 搜尋好友！`);
+        }).catch(() => {
+            showToast(`LINE ID：${id}`);
+        });
+    };
+});

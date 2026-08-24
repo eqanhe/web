@@ -1,0 +1,12 @@
+{
+  "projectName": "安和國小 EQ 志工組官方網站",
+  "mainRepository": {
+    "account": "eqanhe",
+    "remoteName": "origin",
+    "branch": "main",
+    "url": "https://github.com/eqanhe/web.git"
+  },
+  "checkpointLogPath": "Checkpoints.md",
+  "archiveRulesPath": ".agents/archive_rules/",
+  "versionFormat": "vX.XX"
+}
