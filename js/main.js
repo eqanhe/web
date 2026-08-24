@@ -95,10 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnResetForm = document.getElementById('btn-reset-form');
 
     if (registrationForm) {
+        // 後端整合設定（試算表寫入與 Email 通知）
+        const GOOGLE_APPS_SCRIPT_WEBAPP_URL = ''; // 部署 Google Apps Script Web App 後可填入此處
         const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfSos9SzhP0PsOiHEQKmRzOjoO_N6sKKj7iIXrstmwETB-b7A/formResponse';
-        const NOTIFY_TARGET = 'eq.anhe@gmail.com'; // 綁定 eq.anhe@gmail.com
+        const NOTIFY_TARGET = 'eq.anhe@gmail.com'; // 官方專屬 Email 通知信箱
 
-        // 非同步寄送通知 Email 至指定信箱
+        // 非同步寄送備援通知 Email 至指定信箱 (FormSubmit 備援)
         async function sendEmailNotification(data) {
             try {
                 const now = new Date();
@@ -194,19 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 formOptionsToSubmit.push('擔任志工');
             }
 
-            // 建立要送往 Google 表單的 FormData / URLSearchParams
-            const formData = new URLSearchParams();
-            formData.append('entry.602205738', nameVal);     // 姓名
-            formData.append('entry.1903577013', phoneVal);   // 手機號碼
-            if (lineVal) {
-                formData.append('entry.1179144741', lineVal); // LINE ID
-            }
-            
-            // 勾選項目依序傳送
-            formOptionsToSubmit.forEach(opt => {
-                formData.append('entry.1902119823', opt);
-            });
-
             // 切換按鈕為載入狀態
             if (submitBtn) {
                 submitBtn.disabled = true;
@@ -218,24 +207,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // 非同步寄送 Email 通知至 eq.anhe@gmail.com (背景執行不阻礙流程)
-            sendEmailNotification({
+            const registrationPayload = {
                 name: nameVal,
                 phone: phoneVal,
                 line: lineVal,
+                plan: selectedPlan === 'course_and_volunteer' ? '方法二:認真學習(擔任志工+線上學習)' : '方法一:輕度學習(擔任志工)',
                 options: formOptionsToSubmit
-            });
+            };
 
             try {
-                // 使用 fetch no-cors 模式直接背景寫入 Google Form
-                await fetch(GOOGLE_FORM_ACTION_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: formData.toString()
-                });
+                // 優先使用 Google Apps Script Web App 直連寫入試算表 + Gmail 寄信
+                if (GOOGLE_APPS_SCRIPT_WEBAPP_URL) {
+                    await fetch(GOOGLE_APPS_SCRIPT_WEBAPP_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(registrationPayload)
+                    });
+                } else {
+                    // 同步寄送 Email 通知至 eq.anhe@gmail.com
+                    sendEmailNotification(registrationPayload);
+
+                    // 建立要送往 Google 表單的 FormData / URLSearchParams
+                    const formData = new URLSearchParams();
+                    formData.append('entry.602205738', nameVal);     // 姓名
+                    formData.append('entry.1903577013', phoneVal);   // 手機號碼
+                    if (lineVal) {
+                        formData.append('entry.1179144741', lineVal); // LINE ID
+                    }
+                    
+                    formOptionsToSubmit.forEach(opt => {
+                        formData.append('entry.1902119823', opt);
+                    });
+
+                    // 使用 fetch no-cors 模式直接背景寫入 Google Form
+                    await fetch(GOOGLE_FORM_ACTION_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: formData.toString()
+                    });
+                }
 
                 // 稍微延遲 500ms 營造舒適流暢感
                 await new Promise(r => setTimeout(r, 500));

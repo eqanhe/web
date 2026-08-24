@@ -6,6 +6,24 @@
 
 ## 📌 Checkpoint 快照紀錄總覽
 
+### 🌟 [v1.03] - 升級 Google Apps Script 試算表自動入庫與 eq.anhe@gmail.com 官方直發系統
+- **快照時間**：2026-08-24
+- **Git 標籤**：`v1.03`
+- **主要倉庫**：https://github.com/eqanhe/web.git
+- **線上網址**：https://eqanhe.github.io/web/
+- **核心更新內容**：
+  1. **Google 雲端硬碟試算表入庫對接 (`202609安和EQ芯志工報名表單`)**：
+     - 目標資料夾：`https://drive.google.com/drive/folders/1C7r_vO6zPRu8SsVN2HrISaTwLU5Bd1Vn?usp=sharing`
+     - 升級 `google_apps_script_notification.js`：包含 `doPost`、`setupSheetHeaders`、`sendEmailNotification`，自動建立表頭並寫入報名資料（報名時間、家長姓名、手機號碼、LINE ID、參與方案、處理狀態）。
+  2. **官方 0 廣告 Email 專屬通知 (`eq.anhe@gmail.com`)**：
+     - 自動寄送繁體中文 480px 精緻信件，信件主旨：`【安和 EQ 志工官網】新報名通知：[姓名]（[手機]）`。
+  3. **前端 main.js 提交架構雙軌升級**：
+     - 支援 Web App URL 直連與 Google Form / FormSubmit 雙備援。
+  4. **100% 雙目錄同步**：
+     - 根目錄與 `web/` 目錄已完成 100% 同步。
+
+---
+
 ### 🌟 [v1.02] - CTA 與底端列文案精準統一為「加 Line 諮詢」並直接超連結
 - **快照時間**：2026-08-24
 - **Git 標籤**：`v1.02`
