@@ -6,6 +6,24 @@
 
 ## 📌 Checkpoint 快照紀錄總覽
 
+### 🌟 [v2.02] - 安和 EQ 獨立關鍵字矩陣部署（防衝突隔離策略）與 GSC 搜尋引擎收錄建設
+- **快照時間**：2026-09-04 16:25
+- **Git 標籤**：`v2.02`
+- **主要倉庫**：https://github.com/eqanhe/web.git
+- **線上網址**：https://eqanhe.github.io/web/
+- **主要變更與建置內容**：
+  1. **安和 EQ 專屬關鍵字矩陣（零衝突隔離策略）**：
+     - 核心詞全面鎖定：`安和EQ`、`EQ安和`、`安和EQ志工`、`安和國小EQ`、`安和國小EQ志工`。
+     - **徹底排除所有中性無校名詞彙**（如單獨的「EQ志工」、「EQ情緒教育」、「情緒教育志工」等全數由樂利獨佔），避免兩校官網發生搜尋內部衝突。
+  2. **全面優化 Meta 與 Google 結構化資料**：
+     - 更新 `<title>`、`<meta description>`、`<meta keywords>`、Open Graph、Twitter Cards。
+     - JSON-LD 新增 `alternateName: ["安和EQ", "EQ安和", "安和國小EQ志工", "安和國小EQ", "新北市土城區安和國小EQ志工組"]`。
+  3. **搜尋引擎索引基石建立**：
+     - 新增 [robots.txt](file:///p:/bennychen/0AI_共用資料夾/EQ/EQ官網(安和)/robots.txt) 與 [sitemap.xml](file:///p:/bennychen/0AI_共用資料夾/EQ/EQ官網(安和)/sitemap.xml)。
+     - 植入 Google Search Console 驗證標籤並完成雙目錄 (`web/`) 100% 同步與雙分支 (`main`, `gh-pages`) 推送。
+
+---
+
 ### 🌟 [v2.01] - 精準更新方法二（認真學習）擔任志工時數為 12 小時（每學年僅 6 次，下午 13:00~15:00）
 - **快照時間**：2026-09-03 15:15
 - **Git 標籤**：`v2.01`
